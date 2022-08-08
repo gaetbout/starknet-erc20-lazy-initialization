@@ -1,0 +1,10 @@
+["protostar.config"]
+protostar_version = "0.3.0"
+
+["protostar.project"]
+libs_path = "lib/open_zeppelin"
+
+["protostar.contracts"]
+main = [
+    "contracts/erc20.cairo",
+]
