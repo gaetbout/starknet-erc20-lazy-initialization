@@ -4,17 +4,17 @@
 %lang starknet
 
 from starkware.cairo.common.cairo_builtins import HashBuiltin
-from starkware.cairo.common.bool import TRUE
-from starkware.cairo.common.uint256 import Uint256
+from starkware.cairo.common.bool import TRUE, FALSE
+from starkware.cairo.common.uint256 import Uint256, uint256_sub
 
 from openzeppelin.token.erc20.library import ERC20
 
+const NAME = 'The lazy coin'
+const SYMBOL = 'LAZY'
+const DECIMALS = 18
 @constructor
-func constructor{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-    name : felt, symbol : felt, decimals : felt, initial_supply : Uint256, recipient : felt
-):
-    ERC20.initializer(name, symbol, decimals)
-    ERC20._mint(recipient, initial_supply)
+func constructor{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
+    ERC20.initializer(NAME, SYMBOL, DECIMALS)
     return ()
 end
 
@@ -54,8 +54,26 @@ end
 func balanceOf{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
     account : felt
 ) -> (balance : Uint256):
+    alloc_locals
     let (balance : Uint256) = ERC20.balance_of(account)
-    return (balance)
+    let (isZero) = isEqualZero(balance)
+    if isZero == TRUE:
+        let (balanceMinusOne) = uint256_sub(balance, Uint256(1, 0))
+        return (balanceMinusOne)
+    end
+    return (Uint256(100 * (10 ** 18), 0))
+end
+
+func isEqualZero{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+    number : Uint256
+) -> (isEqualZero : felt):
+    if number.low != 0:
+        return (FALSE)
+    end
+    if number.low != 0:
+        return (FALSE)
+    end
+    return (TRUE)
 end
 
 @view
