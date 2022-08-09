@@ -13,6 +13,8 @@ from openzeppelin.token.erc20.library import ERC20
 const NAME = 'The lazy coin'
 const SYMBOL = 'LAZY'
 const DECIMALS = 18
+const INITIAL_TOKEN_AMOUNT = 100000000000000000000  # 100 * 10^18
+
 @constructor
 func constructor{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
     ERC20.initializer(NAME, SYMBOL, DECIMALS)
@@ -59,10 +61,18 @@ func balanceOf{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr
     let (balance : Uint256) = ERC20.balance_of(account)
     let (isZero) = isEqualZero(balance)
     if isZero == TRUE:
-        let (balanceMinusOne) = uint256_sub(balance, Uint256(1, 0))
-        return (balanceMinusOne)
+        return (Uint256(INITIAL_TOKEN_AMOUNT, 0))
     end
-    return (Uint256(100000000000000000000, 0))
+    let (balanceMinusOne) = uint256_sub(balance, Uint256(1, 0))
+    return (balanceMinusOne)
+end
+
+@view
+func actualBalanceOf{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+    account : felt
+) -> (balance : Uint256):
+    let (balance : Uint256) = ERC20.balance_of(account)
+    return (balance)
 end
 
 func isEqualZero{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
@@ -71,7 +81,7 @@ func isEqualZero{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
     if number.low != 0:
         return (FALSE)
     end
-    if number.low != 0:
+    if number.high != 0:
         return (FALSE)
     end
     return (TRUE)
@@ -106,8 +116,8 @@ func checkAndSetBalanceFor{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, ran
     let (addressBalance : Uint256) = ERC20.balance_of(address)
     let (isZero) = isEqualZero(addressBalance)
     if (isZero) == TRUE:
-        let amountToTransfer = Uint256(100000000000000000001, 0)
-        ERC20.transfer(address, amountToTransfer)
+        let amountToTransfer = Uint256(INITIAL_TOKEN_AMOUNT + 1, 0)
+        ERC20._mint(address, amountToTransfer)
         tempvar syscall_ptr = syscall_ptr
         tempvar pedersen_ptr = pedersen_ptr
         tempvar range_check_ptr = range_check_ptr
