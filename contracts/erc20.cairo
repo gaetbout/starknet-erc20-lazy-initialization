@@ -3,6 +3,7 @@
 
 %lang starknet
 
+from starkware.starknet.common.syscalls import get_caller_address
 from starkware.cairo.common.cairo_builtins import HashBuiltin
 from starkware.cairo.common.bool import TRUE, FALSE
 from starkware.cairo.common.uint256 import Uint256, uint256_sub
@@ -61,7 +62,7 @@ func balanceOf{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr
         let (balanceMinusOne) = uint256_sub(balance, Uint256(1, 0))
         return (balanceMinusOne)
     end
-    return (Uint256(100 * (10 ** 18), 0))
+    return (Uint256(100000000000000000000, 0))
 end
 
 func isEqualZero{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
@@ -92,8 +93,30 @@ end
 func transfer{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
     recipient : felt, amount : Uint256
 ) -> (success : felt):
+    let (sender) = get_caller_address()
+    checkAndSetBalanceFor(sender)
+    checkAndSetBalanceFor(recipient)
     ERC20.transfer(recipient, amount)
     return (TRUE)
+end
+
+func checkAndSetBalanceFor{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+    address : felt
+):
+    let (addressBalance : Uint256) = ERC20.balance_of(address)
+    let (isZero) = isEqualZero(addressBalance)
+    if (isZero) == TRUE:
+        let amountToTransfer = Uint256(100000000000000000001, 0)
+        ERC20.transfer(address, amountToTransfer)
+        tempvar syscall_ptr = syscall_ptr
+        tempvar pedersen_ptr = pedersen_ptr
+        tempvar range_check_ptr = range_check_ptr
+    else:
+        tempvar syscall_ptr = syscall_ptr
+        tempvar pedersen_ptr = pedersen_ptr
+        tempvar range_check_ptr = range_check_ptr
+    end
+    return ()
 end
 
 @external
