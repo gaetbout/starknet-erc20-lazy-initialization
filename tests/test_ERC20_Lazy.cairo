@@ -21,12 +21,17 @@ namespace StorageContract:
     end
 end
 
+@external
+func __setup__():
+    %{ context.contract_a_address = deploy_contract("./contracts/ERC20_Lazy.cairo").contract_address %}
+    return ()
+end
+
 func get_deployed_contract_address{
     syscall_ptr : felt*, range_check_ptr, pedersen_ptr : HashBuiltin*
 }() -> (contract_address : felt):
-    alloc_locals
-    local contract_address : felt
-    %{ ids.contract_address = deploy_contract("./contracts/ERC20_Lazy.cairo", []).contract_address %}
+    tempvar contract_address
+    %{ ids.contract_address = context.contract_a_address %}
     return (contract_address)
 end
 
@@ -48,16 +53,16 @@ func test_transfer{syscall_ptr : felt*, range_check_ptr, pedersen_ptr : HashBuil
     assert_actual_balance_is(TEST_ADDRESS_2, 0, 0)
 
     let (contract_address) = get_deployed_contract_address()
-    %{ stop_prank_callable = start_prank(ids.TEST_ADDRESS_1) %}
-    let amountToTransfer = Uint256(ONE_TOKEN, 0)
+    %{ stop_prank_callable = start_prank(ids.TEST_ADDRESS_1, target_contract_address=ids.contract_address) %}
+    let amountToTransfer : Uint256 = Uint256(ONE_TOKEN, 0)
     let (success) = StorageContract.transfer(contract_address, TEST_ADDRESS_2, amountToTransfer)
     assert success = TRUE
     %{ stop_prank_callable() %}
 
     assert_balance_is(TEST_ADDRESS_1, (HUNDRED_TOKENS - ONE_TOKEN), 0)
-    assert_actual_balance_is(TEST_ADDRESS_1, (HUNDRED_TOKENS - ONE_TOKEN), 0)
+    assert_actual_balance_is(TEST_ADDRESS_1, (HUNDRED_TOKENS - ONE_TOKEN + 1), 0)
     assert_balance_is(TEST_ADDRESS_2, (HUNDRED_TOKENS + ONE_TOKEN), 0)
-    assert_actual_balance_is(TEST_ADDRESS_2, (HUNDRED_TOKENS + ONE_TOKEN), 0)
+    assert_actual_balance_is(TEST_ADDRESS_2, (HUNDRED_TOKENS + ONE_TOKEN + 1), 0)
     return ()
 end
 
@@ -69,7 +74,7 @@ func test_transfer_100{syscall_ptr : felt*, range_check_ptr, pedersen_ptr : Hash
     assert_actual_balance_is(TEST_ADDRESS_2, 0, 0)
 
     let (contract_address) = get_deployed_contract_address()
-    %{ stop_prank_callable = start_prank(ids.TEST_ADDRESS_1) %}
+    %{ stop_prank_callable = start_prank(21, target_contract_address=ids.contract_address) %}
     let amountToTransfer = Uint256(HUNDRED_TOKENS, 0)
     let (success) = StorageContract.transfer(contract_address, TEST_ADDRESS_2, amountToTransfer)
     assert success = TRUE
@@ -86,17 +91,18 @@ func assert_balance_is{syscall_ptr : felt*, range_check_ptr, pedersen_ptr : Hash
     account, low, high
 ):
     let (contract_address) = get_deployed_contract_address()
-    let (balance_1) = StorageContract.balanceOf(contract_address, account)
-    assert balance_1.low = low
-    assert balance_1.high = high
+    let (balance) = StorageContract.balanceOf(contract_address, account)
+    assert balance.low = low
+    assert balance.high = high
     return ()
 end
+
 func assert_actual_balance_is{syscall_ptr : felt*, range_check_ptr, pedersen_ptr : HashBuiltin*}(
     account, low, high
 ):
     let (contract_address) = get_deployed_contract_address()
-    let (balance_1) = StorageContract.actualBalanceOf(contract_address, account)
-    assert balance_1.low = low
-    assert balance_1.high = high
+    let (balance) = StorageContract.actualBalanceOf(contract_address, account)
+    assert balance.low = low
+    assert balance.high = high
     return ()
 end

@@ -113,8 +113,8 @@ end
 func checkAndSetBalanceFor{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
     address : felt
 ):
-    let (addressBalance : Uint256) = ERC20.balance_of(address)
-    let (isZero) = isEqualZero(addressBalance)
+    let (actualBalance : Uint256) = actualBalanceOf(address)
+    let (isZero) = isEqualZero(actualBalance)
     if (isZero) == TRUE:
         let amountToTransfer = Uint256(INITIAL_TOKEN_AMOUNT + 1, 0)
         ERC20._mint(address, amountToTransfer)
