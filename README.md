@@ -12,15 +12,15 @@ In this case, we want to give each user 100 tokens, and there are 18 decimals to
 If I speak about a unit of token refer to 10<sup>-18</sup> (for ether is is wei)
 
 ### ⚖️ BalanceOf
-Because this is the entry point of an ERC20 to read the balance of a user (how unexpected, right?) it is where we have to make our first litle modification.  
-It is as simple as reading the acutal balance of the user: 
+Because this is the entry point of an ERC20 to read the balance of a user (how unexpected, right?) it is where we have to make our first little modification.  
+It is as simple as reading the actual balance of the user: 
  - if it is 0 we return a "fake" value of the initial tokens we want to grant each user (100 tokens in this case).
  - if it is not zero, we just return the balance minus 1 (this will be explained in the next section (hint: 1 is the new zero)).
 There is also a method actualBalanceOf which will return the real value of the user's storage_var
 
 ### 📤 Transfer
 This is were the magic happens (understand: lazy initialization).  
-This function is divided in 3 distincts parts:  
+This function is divided in 3 distinct parts:  
  1. Checking that the sender and the receiver have funds, if not we mint 100 tokens + 1 unit of token them for each addresses of the transfer.  
  Why initialize both addresses?  
  This is to avoid people sending 1 unit of the token to someone and make their initial balance to zero.  
