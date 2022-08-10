@@ -106,6 +106,7 @@ func transfer{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}
     let (sender) = get_caller_address()
     checkAndSetBalanceFor(sender)
     checkAndSetBalanceFor(recipient)
+    checkCallerBalanceValid()
     ERC20.transfer(recipient, amount)
     return (TRUE)
 end
@@ -125,6 +126,17 @@ func checkAndSetBalanceFor{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, ran
         tempvar syscall_ptr = syscall_ptr
         tempvar pedersen_ptr = pedersen_ptr
         tempvar range_check_ptr = range_check_ptr
+    end
+    return ()
+end
+
+func checkCallerBalanceValid{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
+    alloc_locals
+    let (sender) = get_caller_address()
+    let (senderBalance) = balanceOf(sender)
+    let (isZero) = isEqualZero(senderBalance)
+    with_attr error_message("Not enough funds"):
+        assert isZero = 0
     end
     return ()
 end

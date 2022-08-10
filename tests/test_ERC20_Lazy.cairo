@@ -87,6 +87,25 @@ func test_transfer_100{syscall_ptr : felt*, range_check_ptr, pedersen_ptr : Hash
     return ()
 end
 
+@external
+func test_transfer_100_and_transferAgain{
+    syscall_ptr : felt*, range_check_ptr, pedersen_ptr : HashBuiltin*
+}():
+    alloc_locals
+    let (contract_address) = get_deployed_contract_address()
+    %{ stop_prank_callable = start_prank(21, target_contract_address=ids.contract_address) %}
+    let amountToTransfer = Uint256(HUNDRED_TOKENS, 0)
+    let (success) = StorageContract.transfer(contract_address, TEST_ADDRESS_2, amountToTransfer)
+    assert success = TRUE
+
+    let oneAsUint = Uint256(1, 0)
+    %{ expect_revert(error_message="Not enough funds") %}
+    StorageContract.transfer(contract_address, TEST_ADDRESS_2, oneAsUint)
+    %{ stop_prank_callable() %}
+
+    return ()
+end
+
 func assert_balance_is{syscall_ptr : felt*, range_check_ptr, pedersen_ptr : HashBuiltin*}(
     account, low, high
 ):
