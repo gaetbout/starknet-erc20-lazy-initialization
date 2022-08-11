@@ -292,6 +292,8 @@ func _transfer{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr
     with_attr error_message("ERC20: transfer amount exceeds balance"):
         let (new_sender_balance : Uint256) = SafeUint256.sub_le(sender_balance, amount)
     end
+
+    # writting the old balance coming from balanceOf and adding one
     let (new_sender_balance_plus_one : Uint256) = SafeUint256.add(new_sender_balance, Uint256(1, 0))
     ERC20_balances.write(sender, new_sender_balance_plus_one)
 
