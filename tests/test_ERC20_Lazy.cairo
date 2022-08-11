@@ -17,7 +17,7 @@ namespace StorageContract:
     func actualBalanceOf(account : felt) -> (balance : Uint256):
     end
 
-    func transfer(recipient : felt, amount : Uint256) -> (success : felt):
+    func transfer(recipient : felt, amount : Uint256) -> ():
     end
 end
 
@@ -55,8 +55,7 @@ func test_transfer{syscall_ptr : felt*, range_check_ptr, pedersen_ptr : HashBuil
     let (contract_address) = get_deployed_contract_address()
     %{ stop_prank_callable = start_prank(ids.TEST_ADDRESS_1, target_contract_address=ids.contract_address) %}
     let amountToTransfer : Uint256 = Uint256(ONE_TOKEN, 0)
-    let (success) = StorageContract.transfer(contract_address, TEST_ADDRESS_2, amountToTransfer)
-    assert success = TRUE
+    StorageContract.transfer(contract_address, TEST_ADDRESS_2, amountToTransfer)
     %{ stop_prank_callable() %}
 
     assert_balance_is(TEST_ADDRESS_1, (HUNDRED_TOKENS - ONE_TOKEN), 0)
@@ -76,8 +75,7 @@ func test_transfer_100{syscall_ptr : felt*, range_check_ptr, pedersen_ptr : Hash
     let (contract_address) = get_deployed_contract_address()
     %{ stop_prank_callable = start_prank(21, target_contract_address=ids.contract_address) %}
     let amountToTransfer = Uint256(HUNDRED_TOKENS, 0)
-    let (success) = StorageContract.transfer(contract_address, TEST_ADDRESS_2, amountToTransfer)
-    assert success = TRUE
+    StorageContract.transfer(contract_address, TEST_ADDRESS_2, amountToTransfer)
     %{ stop_prank_callable() %}
 
     assert_balance_is(TEST_ADDRESS_1, 0, 0)
@@ -95,11 +93,10 @@ func test_transfer_100_and_transferAgain{
     let (contract_address) = get_deployed_contract_address()
     %{ stop_prank_callable = start_prank(21, target_contract_address=ids.contract_address) %}
     let amountToTransfer = Uint256(HUNDRED_TOKENS, 0)
-    let (success) = StorageContract.transfer(contract_address, TEST_ADDRESS_2, amountToTransfer)
-    assert success = TRUE
+    StorageContract.transfer(contract_address, TEST_ADDRESS_2, amountToTransfer)
 
     let oneAsUint = Uint256(1, 0)
-    %{ expect_revert(error_message="Not enough funds") %}
+    %{ expect_revert(error_message="ERC20: transfer amount exceeds balance") %}
     StorageContract.transfer(contract_address, TEST_ADDRESS_2, oneAsUint)
     %{ stop_prank_callable() %}
 
