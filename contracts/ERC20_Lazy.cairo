@@ -287,7 +287,6 @@ func _transfer{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr
 
     _checkAndSetBalanceFor(sender)
     _checkAndSetBalanceFor(recipient)
-    # _checkCallerBalanceValid()
 
     let (sender_balance : Uint256) = ERC20_balances.read(account=sender)
     with_attr error_message("ERC20: transfer amount exceeds balance"):
@@ -371,17 +370,6 @@ func _checkAndSetBalanceFor{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, ra
         tempvar syscall_ptr = syscall_ptr
         tempvar pedersen_ptr = pedersen_ptr
         tempvar range_check_ptr = range_check_ptr
-    end
-    return ()
-end
-
-func _checkCallerBalanceValid{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
-    alloc_locals
-    let (sender) = get_caller_address()
-    let (senderBalance) = balanceOf(sender)
-    let (isZero) = _isEqualZero(senderBalance)
-    with_attr error_message("Not enough funds"):
-        assert isZero = 0
     end
     return ()
 end
