@@ -2,9 +2,17 @@
 
 # starknet-erc20-lazy-initialization
 ## 🪂 Description
+Open now your wallet on Goerli and add this token:  
+0x0431df212060da39f3c9eaf03ca6d09725f5adbaa9a5bd08926f30c23da61e36.  
+This wallet have 100 LAZYs.  
+Deploy a new wallet and add the token again... It also has 100 Lazys.  
+Every existing wallet or wallet that will ever exist will have 100 LAZYs. Wait whaaaaaat?  
+But how, why, again what?  
+  
 This is the biggest airdrop ever. Every address existing or that will exist will have 100 tokens of this token.  
 I didn't run a computer to send this token to every possible address I just modifid the default implementation of an ERC20 contract to make it lazy initialized.  
-Note that it could also be used as a testnet token to avoid user to have to mint the tokens.
+Note that it could also be used as a testnet token to avoid user to have to mint the tokens.  
+[Link to the deployed contract](https://goerli.voyager.online/contract/0x0431df212060da39f3c9eaf03ca6d09725f5adbaa9a5bd08926f30c23da61e36)
 
 ## 🤔 But how?
 First I started by copying [the default ERC20 of OpenZeppelin (at this date)](hhttps://github.com/OpenZeppelin/cairo-contracts/blob/main/src/openzeppelin/token/erc20/library.cairo). Then I just had to adapt two methods.  
