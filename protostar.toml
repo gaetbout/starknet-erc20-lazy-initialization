@@ -1,10 +1,10 @@
 ["protostar.config"]
-protostar_version = "0.3.0"
+protostar_version = "0.4.2"
 
 ["protostar.project"]
-libs_path = "lib/open_zeppelin"
+libs_path = "lib/cairo_contracts"
 
 ["protostar.contracts"]
 main = [
-    "contracts/ERC20_Lazy.cairo",
+    "src/main.cairo",
 ]
