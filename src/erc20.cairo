@@ -74,7 +74,7 @@ mod ERC20 {
         }
 
         fn symbol() -> felt252 {
-                SYMBOL
+            SYMBOL
         }
 
         fn decimals() -> u8 {

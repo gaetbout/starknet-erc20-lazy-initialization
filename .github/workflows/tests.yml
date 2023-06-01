@@ -40,5 +40,5 @@ jobs:
       - name: Step 4 - Make binaries available
         run: echo "./cairo/bin" >> $GITHUB_PATH
 
-      - name: Step 5 - Run all tests
+      - name: Step 5 - Run formatter check
         run: cairo-format --recursive --check .
