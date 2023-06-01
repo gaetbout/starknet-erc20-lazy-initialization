@@ -23,7 +23,7 @@ fn balance_of() {
 #[test]
 #[available_gas(2000000)]
 fn total_supply() {
-    let (max_u256, _) = u256_overflow_sub(0,1);
+    let (max_u256, _) = u256_overflow_sub(0, 1);
     assert(ERC20::total_supply() == max_u256, 'total_supply should be max');
     assert(ERC20::totalSupply() == max_u256, 'total_supply should be max');
 }
@@ -126,5 +126,4 @@ fn test_transfer_all_and_transfer_again() {
 
     ERC20::transfer(contract_address_const::<21>(), 1);
 }
-
 
