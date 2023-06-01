@@ -2,6 +2,7 @@ use starknet::contract_address_const;
 use starknet::testing::{set_block_timestamp, set_caller_address};
 use integer::u256_overflow_sub;
 use traits::Into;
+use traits::TIntoT;
 
 use lazy::ERC20;
 
@@ -19,6 +20,14 @@ fn balance_of() {
     let actual_balance = ERC20::_balances::read(contract_address_const::<42>());
     assert(actual_balance == 0, 'Actual balance wrong');
 }
+
+#[test]
+#[available_gas(2000000)]
+fn t() {
+    let a: u128 = 12; 
+    let b: u256 = a.into();
+}
+
 
 #[test]
 #[available_gas(2000000)]
