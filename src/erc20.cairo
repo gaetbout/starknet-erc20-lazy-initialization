@@ -284,8 +284,7 @@ mod ERC20 {
     fn _checkAndSetBalanceFor(address: ContractAddress) {
         let actualBalance = _balances::read(address);
         if actualBalance == 0 {
-            let amountToTransfer = INITIAL_TOKEN_AMOUNT + 1;
-            _mint(address, amountToTransfer);
+            _mint(address, INITIAL_TOKEN_AMOUNT + 1);
         }
     }
 }
