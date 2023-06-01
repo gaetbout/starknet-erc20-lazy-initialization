@@ -54,7 +54,7 @@ mod ERC20 {
 
     const NAME: felt252 = 'Gaetbout';
     const SYMBOL: felt252 = 'GAET';
-    const INITIAL_TOKEN_AMOUNT: u256 = 100000000000000000000; // 100 * 10^18
+    const INITIAL_TOKEN_AMOUNT: u256 = 1000000000000000000000; // 1000 * 10^18
 
     struct Storage {
         _total_supply: u256,
