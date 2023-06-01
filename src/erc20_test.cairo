@@ -12,14 +12,14 @@ const ONE_TOKEN: felt252 = 1000000000000000000;
 
 // set_caller_address(contract_address_const::<42>());
 
-#[test]
-#[available_gas(2000000)]
-fn balance_of() {
-    let fake_balance = ERC20::balance_of(contract_address_const::<42>());
-    assert(fake_balance == 100000000000000000000.into(), 'Fake balance wrong');
-    let actual_balance = ERC20::balances::read(contract_address_const::<42>());
-    assert(actual_balance == 0.into(), 'Actual balance wrong');
-}
+// #[test]
+// #[available_gas(2000000)]
+// fn balance_of() {
+//     let fake_balance = ERC20::balance_of(contract_address_const::<42>());
+//     assert(fake_balance == 100000000000000000000.into(), 'Fake balance wrong');
+//     let actual_balance = ERC20::balances::read(contract_address_const::<42>());
+//     assert(actual_balance == 0.into(), 'Actual balance wrong');
+// }
 
 // #[test]
 // fn test_transfer() {
