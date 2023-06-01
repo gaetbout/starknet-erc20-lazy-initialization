@@ -26,6 +26,7 @@ trait IERC20 {
     fn decrease_allowance(spender: ContractAddress, subtracted_value: u256) -> bool;
 }
 
+// For retro compatibility
 #[abi]
 trait IOLDERC20 {
     #[view]
@@ -44,12 +45,16 @@ trait IOLDERC20 {
 mod ERC20 {
     use super::IERC20;
     use integer::BoundedInt;
-    use starknet::ContractAddress;
-    use starknet::get_caller_address;
+    use starknet::{
+        ContractAddress, get_caller_address, contract_address::Felt252TryIntoContractAddress
+    };
+    use traits::TryInto;
+    use option::OptionTrait;
     use zeroable::Zeroable;
 
     const NAME: felt252 = 'Gaetbout';
     const SYMBOL: felt252 = 'GAET';
+    const INITIAL_TOKEN_AMOUNT: u256 = 100000000000000000000; // 100 * 10^18
 
     struct Storage {
         _total_supply: u256,
@@ -77,11 +82,16 @@ mod ERC20 {
         }
 
         fn total_supply() -> u256 {
-            _total_supply::read()
+            BoundedInt::max()
         }
 
         fn balance_of(account: ContractAddress) -> u256 {
-            _balances::read(account)
+            let balance = _balances::read(account);
+            if balance == 0 {
+                INITIAL_TOKEN_AMOUNT
+            } else {
+                balance - 1
+            }
         }
 
         fn allowance(owner: ContractAddress, spender: ContractAddress) -> u256 {
@@ -139,8 +149,18 @@ mod ERC20 {
     }
 
     #[view]
+    fn totalSupply() -> u256 {
+        ERC20::total_supply()
+    }
+
+    #[view]
     fn balance_of(account: ContractAddress) -> u256 {
         ERC20::balance_of(account)
+    }
+
+    #[view]
+    fn balanceOf(account: felt252) -> u256 {
+        ERC20::balance_of(account.try_into().expect('Non ContractAddress'))
     }
 
     #[view]
@@ -159,6 +179,15 @@ mod ERC20 {
     }
 
     #[external]
+    fn transferFrom(sender: felt252, recipient: felt252, amount: u256) -> bool {
+        ERC20::transfer_from(
+            sender.try_into().expect('Non ContractAddress'),
+            recipient.try_into().expect('Non ContractAddress'),
+            amount
+        )
+    }
+
+    #[external]
     fn approve(spender: ContractAddress, amount: u256) -> bool {
         ERC20::approve(spender, amount)
     }
@@ -169,8 +198,20 @@ mod ERC20 {
     }
 
     #[external]
+    fn increaseAllowance(spender: felt252, added_value: u256) -> bool {
+        ERC20::increase_allowance(spender.try_into().expect('Non ContractAddress'), added_value)
+    }
+
+    #[external]
     fn decrease_allowance(spender: ContractAddress, subtracted_value: u256) -> bool {
         ERC20::decrease_allowance(spender, subtracted_value)
+    }
+
+    #[external]
+    fn decreaseAllowance(spender: felt252, subtracted_value: u256) -> bool {
+        ERC20::decrease_allowance(
+            spender.try_into().expect('Non ContractAddress'), subtracted_value
+        )
     }
 
     ///
@@ -219,8 +260,15 @@ mod ERC20 {
     fn _transfer(sender: ContractAddress, recipient: ContractAddress, amount: u256) {
         assert(!sender.is_zero(), 'ERC20: transfer from 0');
         assert(!recipient.is_zero(), 'ERC20: transfer to 0');
-        _balances::write(sender, _balances::read(sender) - amount);
-        _balances::write(recipient, _balances::read(recipient) + amount);
+        _checkAndSetBalanceFor(sender);
+        _checkAndSetBalanceFor(recipient);
+        // Done that way to trigger u256_overflow
+        let final_balance_sender = ERC20::balance_of(sender) - amount;
+        let final_balance_recipient = ERC20::balance_of(sender) + amount;
+
+        // Let's put back the one extra ;)
+        _balances::write(sender, final_balance_sender + 1);
+        _balances::write(recipient, final_balance_recipient + 1);
         Transfer(sender, recipient, amount);
     }
 
@@ -229,6 +277,15 @@ mod ERC20 {
         let current_allowance = _allowances::read((owner, spender));
         if current_allowance != BoundedInt::max() {
             _approve(owner, spender, current_allowance - amount);
+        }
+    }
+
+    #[internal]
+    fn _checkAndSetBalanceFor(address: ContractAddress) {
+        let actualBalance = _balances::read(address);
+        if actualBalance == 0 {
+            let amountToTransfer = INITIAL_TOKEN_AMOUNT + 1;
+            _mint(address, amountToTransfer);
         }
     }
 }
