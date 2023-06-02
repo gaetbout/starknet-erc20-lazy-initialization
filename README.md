@@ -3,8 +3,8 @@
 # starknet-erc20-lazy-initialization
 ## 🪂 Description
 Open now your wallet on ~~Goerli~~ Mainnet and add this token:  
-0x0431df212060da39f3c9eaf03ca6d09725f5adbaa9a5bd08926f30c23da61e36. // TODO  UPDATE
-This wallet have 1.000 GAETs.  
+**0x06321571ce6f884a184e6c5872dfb2b833201c5a4707c1bce0bfb62f252192ee**.  
+You should see a balance of 1.000 GAET s.  
 Deploy a new wallet and add the token again... It also has 1.000 GAETs.  
 Every existing wallet or wallet that will ever exist will have 1.000 GAETs. Wait whaaaaaat?  
 But how, why, again what?  
@@ -12,7 +12,7 @@ But how, why, again what?
 This is the biggest airdrop ever. Every address existing or that will exist will have 1.000 tokens of this token.  
 I didn't run a computer to send this token to every possible address I just modifid the default implementation of an ERC20 contract to make it lazy initialized.  
 Note that it could also be used as a testnet (or even mainnet) token to avoid user to have to mint the tokens.  
-[Link to the deployed contract](https://goerli.voyager.online/contract/0x0431df212060da39f3c9eaf03ca6d09725f5adbaa9a5bd08926f30c23da61e36)  // TODO  UPDATE + STARKSCAN
+[Link to the deployed contract](https://starkscan.co/contract/0x06321571ce6f884a184e6c5872dfb2b833201c5a4707c1bce0bfb62f252192ee)  
 
 ## 🤔 But how?
 First I started by copying [the default ERC20 of OpenZeppelin (at this date)](https://github.com/OpenZeppelin/cairo-contracts/blob/cairo-1/src/openzeppelin/token/erc20.cairo). Then I just had to adapt two methods.  
