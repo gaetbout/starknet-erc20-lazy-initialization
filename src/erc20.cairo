@@ -264,7 +264,7 @@ mod ERC20 {
         _checkAndSetBalanceFor(recipient);
         // Done that way to trigger u256_overflow
         let final_balance_sender = ERC20::balance_of(sender) - amount;
-        let final_balance_recipient = ERC20::balance_of(sender) + amount;
+        let final_balance_recipient = ERC20::balance_of(recipient) + amount;
 
         // Let's put back the one extra ;)
         _balances::write(sender, final_balance_sender + 1);
