@@ -2,5 +2,5 @@
 mod erc20;
 use erc20::ERC20;
 
-// Test
+#[cfg(test)]
 mod erc20_test;

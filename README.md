@@ -46,12 +46,11 @@ This is the same as written by OpenZeppelin with some adjustemnts:
 
 ## 🌡️ Tests
 
-*Prerequisite: Having cairo installed https://github.com/starkware-libs/cairo/*  
+*Prerequisite: Having asdf scarb installed https://docs.swmansion.com/scarb/download#install-via-asdf*  
 Clone this repo and move in that repo: 
 ```shell
-git clone https://github.com/gaetbout/starknet-erc20-lazy-initialization
-cd starknet-erc20-lazy-initialization
-cairo-test --starknet .
+git clone https://github.com/gaetbout/starknet-erc20-lazy-initialization && cd starknet-erc20-lazy-initialization
+scarb test
 ```  
 For more  details check the Actions tab of this GitHub repository. 
 
