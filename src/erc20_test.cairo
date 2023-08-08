@@ -108,6 +108,26 @@ fn test_transfer_100() {
 
 #[test]
 #[available_gas(20000000)]
+fn test_transfer_back_and_forth() {
+    let erc20 = deploy_erc20();
+
+    assert(erc20.balance_of(sender()) == THOUSAND_TOKENS, 'Fake before balance 42 wrong');
+    assert(erc20.balance_of(recipient()) == THOUSAND_TOKENS, 'Fake before balance 21 wrong');
+
+    set_contract_address(sender());
+    erc20.transfer(recipient(), 100);
+
+    assert(erc20.balance_of(sender()) == THOUSAND_TOKENS - 100, 'Fake balance 42 wrong');
+    assert(erc20.balance_of(recipient()) == THOUSAND_TOKENS + 100, 'Fake balance 21 wrong');
+
+    set_contract_address(recipient());
+    erc20.transfer(sender(), 50);
+    assert(erc20.balance_of(sender()) == THOUSAND_TOKENS - 50, 'Fake balance 42 wrong');
+    assert(erc20.balance_of(recipient()) == THOUSAND_TOKENS + 50, 'Fake balance 21 wrong');
+}
+
+#[test]
+#[available_gas(20000000)]
 fn test_transfer_all() {
     let erc20 = deploy_erc20();
 

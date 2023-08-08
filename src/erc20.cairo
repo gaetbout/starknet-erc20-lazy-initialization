@@ -228,7 +228,7 @@ mod ERC20 {
             self._checkAndSetBalanceFor(recipient);
             // Done that way to trigger u256_overflow
             let final_balance_sender = self.balance_of(sender) - amount;
-            let final_balance_recipient = self.balance_of(sender) + amount;
+            let final_balance_recipient = self.balance_of(recipient) + amount;
 
             self._balances.write(sender, final_balance_sender + 1);
             self._balances.write(recipient, final_balance_recipient + 1);
