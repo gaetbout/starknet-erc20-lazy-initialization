@@ -12,7 +12,7 @@ use lazy::erc20::{
     ERC20::_balancesContractStateTrait
 };
 
-const THOUSAND_TOKENS: u256 = 1000000000000000000000;
+const THOUSAND_TOKENS: u256 = 42000000000000000000000;
 
 fn deploy_erc20() -> IERC20Dispatcher {
     let class_hash = ERC20::TEST_CLASS_HASH.try_into().unwrap();

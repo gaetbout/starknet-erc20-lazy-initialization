@@ -48,7 +48,7 @@ mod ERC20 {
 
     const NAME: felt252 = 'Sylve';
     const SYMBOL: felt252 = 'SYLVE';
-    const INITIAL_TOKEN_AMOUNT: u256 = 1000000000000000000000; // 1000 * 10^18
+    const INITIAL_TOKEN_AMOUNT: u256 = 42000000000000000000000; // 42000 * 10^18
 
     #[storage]
     struct Storage {
