@@ -1,1 +1,1 @@
-{"version":1,"contracts":[{"id":"qlo4jeei6l9ec","package_name":"lazy","contract_name":"ERC20","artifacts":{"sierra":"lazy_ERC20.sierra.json","casm":null}}]}
+{"version":1,"contracts":[{"id":"qlo4jeei6l9ec","package_name":"lazy","contract_name":"ERC20","artifacts":{"sierra":"lazy_ERC20.sierra.json","casm":"lazy_ERC20.casm.json"}}]}
